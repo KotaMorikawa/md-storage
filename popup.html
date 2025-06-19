@@ -16,15 +16,20 @@
     
     <div class="divider"></div>
     
-    <button id="directoryButton" class="button directory-button">
-      📁 保存先ディレクトリを選択
-    </button>
+    <div class="directory-controls">
+      <button id="directoryButton" class="button directory-button">
+        📁 保存先ディレクトリを選択
+      </button>
+      <button id="resetButton" class="button reset-button hidden" title="保存先をリセット">
+        🗑️
+      </button>
+    </div>
     
     <div class="directory-info">
-      <div class="directory-label">保存先:</div>
-      <div id="directoryPath" class="directory-path empty">
+      <span class="directory-label">保存先: </span>
+      <span id="directoryPath" class="directory-path empty">
         ディレクトリが選択されていません
-      </div>
+      </span>
       <div id="browserInfo" class="browser-info"></div>
     </div>
     

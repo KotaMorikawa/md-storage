@@ -52,6 +52,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     return true;
   }
+  
+  if (message.action === 'clearDirectory') {
+    clearStoredDirectoryHandle()
+      .then(() => sendResponse({ success: true }))
+      .catch(error => sendResponse({ success: false, error: error.message }));
+    return true;
+  }
 });
 
 // ページコンテンツの抽出とMarkdown変換

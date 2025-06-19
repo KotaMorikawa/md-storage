@@ -79,19 +79,45 @@ body {
   border-color: #ccc;
 }
 
+.directory-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reset-button {
+  background-color: #ff4757;
+  color: white;
+  min-width: 40px;
+  padding: 10px;
+  border: 1px solid #ff3742;
+}
+
+.reset-button:hover:not(:disabled) {
+  background-color: #ff3742;
+  border-color: #ff2838;
+}
+
+.reset-button.hidden {
+  display: none;
+}
+
 .directory-info {
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
   border-radius: 6px;
   padding: 12px;
   margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
 }
 
 .directory-label {
   font-size: 12px;
   font-weight: 500;
   color: #666;
-  margin-bottom: 4px;
 }
 
 .directory-path {
