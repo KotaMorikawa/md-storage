@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Saver</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Markdown Saver</h1>
+    
+    <button id="saveButton" class="button save-button">
+      <span id="saveButtonText">ページを保存</span>
+    </button>
+    
+    <div class="divider"></div>
+    
+    <button id="directoryButton" class="button directory-button">
+      📁 保存先ディレクトリを選択
+    </button>
+    
+    <div class="directory-info">
+      <div class="directory-label">保存先:</div>
+      <div id="directoryPath" class="directory-path empty">
+        ディレクトリが選択されていません
+      </div>
+      <div id="browserInfo" class="browser-info"></div>
+    </div>
+    
+    <div id="status" class="status hidden">
+      <span id="statusText"></span>
+    </div>
+    
+    <div id="braveHelp" class="brave-help hidden">
+      <div id="braveHelpToggle" class="brave-help-toggle">
+        🦁 Braveユーザーの方へ
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div id="braveHelpContent" class="brave-help-content collapsed">
+        <p>Braveではディレクトリ選択機能がデフォルトで無効です。</p>
+        <div class="brave-help-steps">
+          <strong>有効にする手順：</strong><br>
+          1. brave://flags を開く<br>
+          2. "File System Access API" を検索<br>
+          3. "Enabled" に設定して再起動
+        </div>
+        <p class="brave-help-note">⚠️ この設定はプライバシーに影響する可能性があります</p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      現在のページをMarkdown形式で保存
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
