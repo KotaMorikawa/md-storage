@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const saveButton = document.getElementById('saveButton');
   const saveButtonText = document.getElementById('saveButtonText');
   const directoryButton = document.getElementById('directoryButton');
+  const resetButton = document.getElementById('resetButton');
   const directoryPath = document.getElementById('directoryPath');
   const status = document.getElementById('status');
   const statusText = document.getElementById('statusText');
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // UIを更新
       await saveDirectoryName(response.data.name);
       updateDirectoryDisplay(response.data.name);
+      showResetButton();
       showStatus('success', 'ディレクトリが選択されました');
       setTimeout(() => hideStatus(), 2000);
       
@@ -115,12 +117,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // リセットボタンのクリック処理
+  resetButton.addEventListener('click', async () => {
+    try {
+      // 確認ダイアログを表示
+      const confirmMessage = '保存先ディレクトリの設定をリセットしますか？\n\n次回保存時に改めてディレクトリを選択していただく必要があります。';
+      if (confirm(confirmMessage)) {
+        showStatus('processing', 'ディレクトリ設定をリセット中...');
+        
+        // アクティブタブの取得
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tab) {
+          // Content Script経由でディレクトリハンドルをクリア
+          try {
+            await chrome.tabs.sendMessage(tab.id, { action: 'clearDirectory' });
+          } catch (error) {
+            console.log('Content script not available, clearing storage only');
+          }
+        }
+        
+        // ローカルストレージをクリア
+        await chrome.storage.local.set({
+          directoryName: null,
+          hasDirectoryAccess: false
+        });
+        
+        // UIを初期状態に戻す
+        updateDirectoryDisplay(null);
+        hideResetButton();
+        
+        showStatus('success', 'ディレクトリ設定をリセットしました');
+        setTimeout(() => hideStatus(), 2000);
+      }
+    } catch (error) {
+      console.error('ディレクトリリセットエラー:', error);
+      showStatus('error', 'リセットに失敗しました');
+      setTimeout(() => hideStatus(), 3000);
+    }
+  });
+
   // 初期化：保存されたディレクトリ情報を復元
   async function initializeDirectory() {
     try {
       const result = await chrome.storage.local.get(['directoryName', 'hasDirectoryAccess']);
       if (result.directoryName && result.hasDirectoryAccess) {
         updateDirectoryDisplay(result.directoryName);
+        showResetButton();
         // content script内でディレクトリハンドルが保持されているかは不明なので、
         // 新しいページでは再選択が必要であることを示唆
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -130,6 +172,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           directoryPath.textContent += ' (HTTPSページでのみ有効)';
           directoryPath.style.color = '#f57c00';
         }
+      } else {
+        hideResetButton();
       }
     } catch (error) {
       console.error('ディレクトリ情報の復元エラー:', error);
@@ -150,8 +194,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ディレクトリ表示の更新
   function updateDirectoryDisplay(dirName) {
-    directoryPath.textContent = dirName;
-    directoryPath.classList.remove('empty');
+    if (dirName) {
+      directoryPath.textContent = dirName;
+      directoryPath.classList.remove('empty');
+    } else {
+      directoryPath.textContent = 'ディレクトリが選択されていません';
+      directoryPath.classList.add('empty');
+    }
   }
 
   // Markdownファイルの保存
@@ -221,11 +270,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       .substring(0, 100);            // 長さ制限
   }
 
+  // リセットボタンの表示
+  function showResetButton() {
+    resetButton.classList.remove('hidden');
+  }
+
+  // リセットボタンの非表示
+  function hideResetButton() {
+    resetButton.classList.add('hidden');
+  }
+
   // 処理状態の設定
   function setProcessingState(processing) {
     isProcessing = processing;
     saveButton.disabled = processing;
     directoryButton.disabled = processing;
+    resetButton.disabled = processing;
     
     if (processing) {
       saveButtonText.innerHTML = '<span class="spinner"></span>処理中...';
