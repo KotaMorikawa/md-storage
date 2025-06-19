@@ -86,16 +86,17 @@ body {
 }
 
 .reset-button {
-  background-color: #ff4757;
+  background-color: #6c757d;
   color: white;
-  min-width: 40px;
-  padding: 10px;
-  border: 1px solid #ff3742;
+  min-width: 60px;
+  padding: 10px 12px;
+  border: 1px solid #5a6268;
+  font-size: 13px;
 }
 
 .reset-button:hover:not(:disabled) {
-  background-color: #ff3742;
-  border-color: #ff2838;
+  background-color: #5a6268;
+  border-color: #545b62;
 }
 
 .reset-button.hidden {
